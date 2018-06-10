@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class Client extends Application
 {
@@ -17,12 +18,25 @@ public class Client extends Application
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("scenes/Client.fxml"));
+
+        URL login = getClass().getResource("scenes/Login.fxml");
+        URL login2 = getClass().getResource("scenes/Chat.fxml");
+
+        System.out.println(login2.getPath());
+
+        Parent root = FXMLLoader.load(login);
+
 
         Scene scene = new Scene(root, 300, 275);
+//
+//        primaryStage.setTitle("Client");
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
 
-        primaryStage.setTitle("Client");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        SceneLoader screenController = new SceneLoader(scene);
+        screenController.addScreen("login", screenController.loadScene("Login"));
+        screenController.addScreen("client", screenController.loadScene("Client"));
+//        screenController.addScreen("chat", screenController.loadScene("Chat"));
+        screenController.activate("client");
     }
 }
