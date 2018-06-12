@@ -3,6 +3,7 @@ package ui;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,9 +15,16 @@ public class SceneLoader
 
     private HashMap<String, Pane> screenMap = new HashMap<>();
     private Scene main;
+    private Stage primaryStage;
 
-    public SceneLoader(Scene main) {
+    public SceneLoader(
+            Scene main,
+            Stage primaryStage) {
         this.main = main;
+        this.primaryStage = primaryStage;
+
+        primaryStage.setScene(main);
+        primaryStage.show();
     }
 
     public Pane loadScene(String name) throws IOException
@@ -37,5 +45,9 @@ public class SceneLoader
 
     protected void activate(String name) {
         main.setRoot(screenMap.get(name));
+
+        primaryStage.setWidth(screenMap.get(name).getWidth());
+        primaryStage.setHeight(screenMap.get(name).getHeight());
+        primaryStage.setTitle(name);
     }
 }

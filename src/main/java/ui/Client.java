@@ -20,23 +20,16 @@ public class Client extends Application
     public void start(Stage primaryStage) throws IOException {
 
         URL login = getClass().getResource("scenes/Login.fxml");
-        URL login2 = getClass().getResource("scenes/Chat.fxml");
-
-        System.out.println(login2.getPath());
 
         Parent root = FXMLLoader.load(login);
 
+        Scene scene = new Scene(root, 750, 750);
 
-        Scene scene = new Scene(root, 300, 275);
-//
-//        primaryStage.setTitle("Client");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-
-        SceneLoader screenController = new SceneLoader(scene);
+        SceneLoader screenController = new SceneLoader(scene, primaryStage);
         screenController.addScreen("login", screenController.loadScene("Login"));
         screenController.addScreen("client", screenController.loadScene("Client"));
-//        screenController.addScreen("chat", screenController.loadScene("Chat"));
-        screenController.activate("client");
+        screenController.addScreen("chat", screenController.loadScene("Chat"));
+        screenController.addScreen("chat_selector", screenController.loadScene("ChatSelector"));
+        screenController.activate("chat");
     }
 }

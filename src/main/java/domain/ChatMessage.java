@@ -17,4 +17,14 @@ public class ChatMessage
         this.recievers = recievers;
         this.message = message;
     }
+
+    public ChatMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        //TODO add time
+        return sender + ": " + message;
+    }
 }

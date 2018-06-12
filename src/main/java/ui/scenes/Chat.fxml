@@ -4,11 +4,10 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="416.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.ChatController">
    <children>
-      <TextArea layoutX="14.0" layoutY="338.0" prefHeight="48.0" prefWidth="229.0" />
-      <Button layoutX="262.0" layoutY="338.0" mnemonicParsing="false" text="Button" />
-      <ListView layoutX="14.0" layoutY="14.0" prefHeight="317.0" prefWidth="229.0" />
+      <TextArea layoutX="14.0" layoutY="338.0" prefHeight="48.0" prefWidth="229.0" fx:id = "chatBox"/>
+      <Button layoutX="262.0" layoutY="338.0" mnemonicParsing="false" onAction="#sendChat" text="Send" />
+      <ListView layoutX="14.0" layoutY="14.0" prefHeight="317.0" prefWidth="229.0" fx:id="chatList" />
    </children>
 </Pane>
