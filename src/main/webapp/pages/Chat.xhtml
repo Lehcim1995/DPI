@@ -6,9 +6,24 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
-    <h:outputLabel value="Hello, world"/>
+    <h:outputLabel value="Current chat room"/>
 </f:view>
 
 
+
+<h:dataTable value="#{chat.chatMessages}" var="message">
+    <h:column>
+        <h:outputLabel value="#{message}"/>
+    </h:column>
+</h:dataTable>
+
+<h:form>
+    <h:outputText value="Message" />
+    <h:inputText id="message" value="#{chat.message}"></h:inputText>
+    <h:message for="message"></h:message>
+
+    <h:commandButton action="#{chat.sendMessage}"
+                     value="Send message"></h:commandButton>
+</h:form>
 
 </html>

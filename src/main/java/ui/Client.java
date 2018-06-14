@@ -26,7 +26,7 @@ public class Client extends Application
         Scene scene = new Scene(root, 750, 750);
 
         SceneLoader screenController = new SceneLoader(scene, primaryStage);
-        screenController.addScreen("login", screenController.loadScene("Login"));
+        screenController.addScreen("login", screenController.loadScene("LoginBean"));
         screenController.addScreen("client", screenController.loadScene("Client"));
         screenController.addScreen("chat", screenController.loadScene("Chat"));
         screenController.addScreen("chat_selector", screenController.loadScene("ChatSelector"));

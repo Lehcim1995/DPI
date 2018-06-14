@@ -31,7 +31,7 @@
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <version>5.3</version>
-        </dependency>s
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -85,8 +85,8 @@
                     <version>2.20.1</version>
                 </plugin>
                 <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.1.0</version>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>

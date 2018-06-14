@@ -25,6 +25,6 @@ public class ChatMessage
     @Override
     public String toString() {
         //TODO add time
-        return sender + ": " + message;
+        return sender.getUsername() + ": " + message;
     }
 }

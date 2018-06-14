@@ -2,6 +2,7 @@ package bean;
 
 import activemq.ApplicationBroker;
 import domain.ChatMessage;
+import domain.User;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -9,6 +10,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import javax.jms.JMSException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +28,8 @@ public class ChatBean implements Serializable
 
     private List<ChatMessage> chatMessages;
 
+    private User user;
+
     //Main broker for the messaging application
     private ApplicationBroker gateway;
 
@@ -35,6 +39,7 @@ public class ChatBean implements Serializable
     @PostConstruct
     public void onload()
     {
+
         try
         {
             gateway = new ApplicationBroker();
@@ -71,7 +76,9 @@ public class ChatBean implements Serializable
      */
     public void sendMessage() throws JMSException, InterruptedException
     {
-        gateway.sendMessage(currentChannel, message);
+        ChatMessage chatMessage = new ChatMessage(user, null, message);
+
+        gateway.sendMessageObject(currentChannel, chatMessage);
         this.message = "";
     }
 
@@ -102,7 +109,7 @@ public class ChatBean implements Serializable
     /**
      * Open an existing channel
      *
-     * @param channel
+//     * @param channel
      */
     public void openChannel(String channel) {
         gateway.retrieveChannels(channel);
@@ -158,5 +165,13 @@ public class ChatBean implements Serializable
     public void setChatMessages(List<ChatMessage> chatMessages)
     {
         this.chatMessages = chatMessages;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

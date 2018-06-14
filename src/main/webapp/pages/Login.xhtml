@@ -12,11 +12,11 @@
 
     <h:form>
         <h:outputText value="Username" />
-        <h:inputText id="username" value="#{login.username}"></h:inputText>
-        <h:message for="username"></h:message>
+        <h:inputText id="username" value="#{login.username}"> </h:inputText>
+        <h:message for="username"> </h:message>
 
-        <h:commandButton action="#{login.validateUsernamePassword}"
-                         value="Login"></h:commandButton>
+        <h:commandButton action="#{login.createUser}"
+                         value="Login"> </h:commandButton>
     </h:form>
 </h:body>
 
