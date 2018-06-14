@@ -1,6 +1,7 @@
 package bean;
 
 import activemq.ApplicationBroker;
+import domain.ChatMessage;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -8,6 +9,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import javax.jms.JMSException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +24,8 @@ public class ChatBean implements Serializable
     private String channel = "";
     private String currentChannel = "<No channel selected>";
 
+    private List<ChatMessage> chatMessages;
+
     //Main broker for the messaging application
     private ApplicationBroker gateway;
 
@@ -29,11 +33,16 @@ public class ChatBean implements Serializable
      * Setting up the ApplicationBroker
      */
     @PostConstruct
-    public void onload() {
-        try {
+    public void onload()
+    {
+        try
+        {
             gateway = new ApplicationBroker();
-        } catch (JMSException ex) {
-            Logger.getLogger(ChatBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (JMSException ex)
+        {
+            Logger.getLogger(ChatBean.class.getName())
+                  .log(Level.SEVERE, null, ex);
         }
     }
 
@@ -41,11 +50,16 @@ public class ChatBean implements Serializable
      * Close all connections before closing down
      */
     @PreDestroy
-    public void ondestroy() {
-        try {
+    public void ondestroy()
+    {
+        try
+        {
             gateway.closeAll();
-        } catch (JMSException ex) {
-            Logger.getLogger(ChatBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (JMSException ex)
+        {
+            Logger.getLogger(ChatBean.class.getName())
+                  .log(Level.SEVERE, null, ex);
         }
     }
 
@@ -55,7 +69,8 @@ public class ChatBean implements Serializable
      * @throws JMSException
      * @throws InterruptedException
      */
-    public void sendMessage() throws JMSException, InterruptedException {
+    public void sendMessage() throws JMSException, InterruptedException
+    {
         gateway.sendMessage(currentChannel, message);
         this.message = "";
     }
@@ -63,15 +78,23 @@ public class ChatBean implements Serializable
     /**
      * Subscribe to a new channel
      */
-    public void addChannel() {
-        if (gateway.topics.get(channel) == null) {
-            try {
+    public void addChannel()
+    {
+        if (gateway.topics.get(channel) == null)
+        {
+            try
+            {
                 gateway.createNewChannel(channel);
                 this.channel = "";
-            } catch (JMSException ex) {
-                Logger.getLogger(ChatBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
+            catch (JMSException ex)
+            {
+                Logger.getLogger(ChatBean.class.getName())
+                      .log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+        {
             System.out.print("Trying to create duplicate channel");
         }
     }
@@ -82,40 +105,58 @@ public class ChatBean implements Serializable
      * @param channel
      */
     public void openChannel(String channel) {
-        gateway.refreshChatList(channel);
+        gateway.retrieveChannels(channel);
         currentChannel = channel;
     }
 
     /* Default getters and setters below */
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(String message)
+    {
         this.message = message;
     }
 
-    public String getChannel() {
+    public String getChannel()
+    {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(String channel)
+    {
         this.channel = channel;
     }
 
-    public ApplicationBroker getGateway() {
+    public ApplicationBroker getGateway()
+    {
         return gateway;
     }
 
-    public void setGateway(ApplicationBroker gateway) {
+    public void setGateway(ApplicationBroker gateway)
+    {
         this.gateway = gateway;
     }
 
-    public String getCurrentChannel() {
+    public String getCurrentChannel()
+    {
         return currentChannel;
     }
 
-    public void setCurrentChannel(String currentChannel) {
+    public void setCurrentChannel(String currentChannel)
+    {
         this.currentChannel = currentChannel;
+    }
+
+    public List<ChatMessage> getChatMessages()
+    {
+        return chatMessages;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages)
+    {
+        this.chatMessages = chatMessages;
     }
 }

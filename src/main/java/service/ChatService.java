@@ -1,23 +1,95 @@
 package service;
 
-import domain.Chat;
+import activemq.ApplicationBroker;
+import bean.ChatBean;
 import domain.ChatMessage;
-import domain.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.Stateless;
+import javax.jms.JMSException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+@Stateless
 public class ChatService
 {
 
+    //Main broker for the messaging application
+    private ApplicationBroker gateway;
 
-    public boolean Chat(User from, User too, String chat)
+    @PostConstruct
+    public void onload()
     {
+        try
+        {
+            gateway = new ApplicationBroker();
+        }
+        catch (JMSException ex)
+        {
+            Logger.getLogger(ChatBean.class.getName())
+                  .log(Level.SEVERE, null, ex);
+        }
+    }
 
-        ChatMessage cm = new ChatMessage(from, Arrays.asList(too), chat);
+    /**
+     * Close all connections before closing down
+     */
+    @PreDestroy
+    public void ondestroy()
+    {
+        try
+        {
+            gateway.closeAll();
+        }
+        catch (JMSException ex)
+        {
+            Logger.getLogger(ChatBean.class.getName())
+                  .log(Level.SEVERE, null, ex);
+        }
+    }
 
-        // TODO send this message
+    /**
+     * Send a message to your current channel
+     *
+     * @throws JMSException
+     * @throws InterruptedException
+     */
+    public void sendMessage(ChatMessage message, String currentChannel) throws JMSException, InterruptedException
+    {
+        gateway.sendMessageObject(currentChannel, message);
+    }
 
-        return false;
+    /**
+     * Subscribe to a new channel
+     */
+    public void addChannel(String channel)
+    {
+        if (gateway.topics.get(channel) == null)
+        {
+            try
+            {
+                gateway.createNewChannel(channel);
+            }
+            catch (JMSException ex)
+            {
+                Logger.getLogger(ChatBean.class.getName())
+                      .log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+        {
+            System.out.print("Trying to create duplicate channel");
+        }
+    }
+
+    /**
+     * Open an existing channel
+     *
+     * @param channel
+     */
+    public void openChannel(String channel) {
+        gateway.retrieveChannels(channel);
+//        currentChannel = channel;
     }
 }

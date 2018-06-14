@@ -21,11 +21,8 @@ import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-/**
- *
- * @author mimoun
- */
-public class TopicReceiverGateway {
+public class TopicReceiverGateway
+{
 
     private final ConnectionFactory connectionFactory;
     private final Connection connection;
@@ -40,7 +37,8 @@ public class TopicReceiverGateway {
      * @param channel
      * @throws JMSException
      */
-    public TopicReceiverGateway(String channel) throws JMSException {
+    public TopicReceiverGateway(String channel) throws JMSException
+    {
         //Create new Connection, Session, Topic and MessageConsumer
         connectionFactory = new ActiveMQConnectionFactory(url);
         connection = connectionFactory.createConnection();
@@ -52,10 +50,13 @@ public class TopicReceiverGateway {
         connection.start();
 
         //Set MessageListener for Consumer
-        consumer.setMessageListener(new MessageListener() {
+        consumer.setMessageListener(new MessageListener()
+        {
             @Override
-            public void onMessage(Message msg) {
-                try {
+            public void onMessage(Message msg)
+            {
+                try
+                {
                     TextMessage textMessage = (TextMessage) msg;
                     System.out.println("Received message from topic1 '" + textMessage.getText() + "'");
                 } catch (JMSException ex) {
@@ -71,7 +72,8 @@ public class TopicReceiverGateway {
      * @param ml
      * @throws JMSException
      */
-    public void setListener(MessageListener ml) throws JMSException {
+    public void setListener(MessageListener ml) throws JMSException
+    {
         consumer.setMessageListener(ml);
     }
 
@@ -80,7 +82,8 @@ public class TopicReceiverGateway {
      *
      * @throws JMSException
      */
-    public void close() throws JMSException {
+    public void close() throws JMSException
+    {
         connection.close();
     }
 }

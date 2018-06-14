@@ -16,10 +16,6 @@ import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-/**
- *
- * @author mimoun
- */
 public class TopicSenderGateway {
 
     private final ConnectionFactory connectionFactory;
@@ -35,7 +31,8 @@ public class TopicSenderGateway {
      * @param channel
      * @throws JMSException
      */
-    public TopicSenderGateway(String channel) throws JMSException {
+    public TopicSenderGateway(String channel) throws JMSException
+    {
         //Create new Connection, Session, Topic and Producer
         connectionFactory = new ActiveMQConnectionFactory(url);
         connection = connectionFactory.createConnection();
@@ -55,7 +52,8 @@ public class TopicSenderGateway {
      * @param text
      * @throws JMSException
      */
-    public void sendMessage(String text) throws JMSException {
+    public void sendMessage(String text) throws JMSException
+    {
         TextMessage messageText = session.createTextMessage(text);
 
         producer.send(messageText);
@@ -66,7 +64,8 @@ public class TopicSenderGateway {
      *
      * @throws JMSException
      */
-    public void close() throws JMSException {
+    public void close() throws JMSException
+    {
         connection.close();
     }
 }

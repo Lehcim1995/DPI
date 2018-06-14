@@ -5,38 +5,34 @@
  */
 package activemq;
 
-import java.util.Map;
-import java.util.HashMap;
+import com.google.gson.Gson;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jms.Message;
-import javax.jms.TextMessage;
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
-
-/**
- *
- * @author mimoun
- */
 public class ApplicationBroker
 {
 
-    //Chatlist for topics
-    private ArrayList<String> chatList = new ArrayList<>();
-
     //Maps for topics
-    public Map<String, ArrayList<String>> topics;
+    public Map<String, List<String>> topics;
     public Map<String, TopicSenderGateway> topicProducer;
     public Map<String, TopicReceiverGateway> topicReceiver;
+    //Chatlist for topics
+    private List<String> chatList = new ArrayList<>();
 
     /**
      * Constructor for ApplicationBroker
      *
      * @throws JMSException
      */
-    public ApplicationBroker() throws JMSException {
+    public ApplicationBroker() throws JMSException
+    {
         this.topics = new HashMap<>();
         this.topicProducer = new HashMap<>();
         this.topicReceiver = new HashMap<>();
@@ -47,15 +43,20 @@ public class ApplicationBroker
      *
      * @throws JMSException
      */
-    public void closeAll() throws JMSException {
+    public void closeAll() throws JMSException
+    {
         //Closing all producers
-        for (Map.Entry<String, TopicSenderGateway> entry : topicProducer.entrySet()) {
-            entry.getValue().close();
+        for (Map.Entry<String, TopicSenderGateway> entry : topicProducer.entrySet())
+        {
+            entry.getValue()
+                 .close();
         }
 
         //Closing al receivers
-        for (Map.Entry<String, TopicReceiverGateway> entry : topicReceiver.entrySet()) {
-            entry.getValue().close();
+        for (Map.Entry<String, TopicReceiverGateway> entry : topicReceiver.entrySet())
+        {
+            entry.getValue()
+                 .close();
         }
     }
 
@@ -65,25 +66,29 @@ public class ApplicationBroker
      * @param channel
      * @throws JMSException
      */
-    public void createNewChannel(final String channel) throws JMSException {
+    public void createNewChannel(final String channel) throws JMSException
+    {
         //Add all the channel needed components to their desired map
         topicProducer.put(channel, new TopicSenderGateway(channel));
         topicReceiver.put(channel, new TopicReceiverGateway(channel));
-        topics.put(channel, new ArrayList<String>());
+        topics.put(channel, new ArrayList<>());
 
         //Set MessageListener for the TopicReceiverGateway
-        topicReceiver.get(channel).setListener(new MessageListener() {
-            @Override
-            public void onMessage(Message msg) {
-                try {
-                    TextMessage textMessage = (TextMessage) msg;
-                    topics.get(channel).add(msg.getJMSMessageID() + "    :" + textMessage.getText());
-                    refreshChatList(channel);
-                } catch (JMSException ex) {
-                    Logger.getLogger(ApplicationBroker.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+        topicReceiver.get(channel)
+                     .setListener(msg -> {
+                         try
+                         {
+                             TextMessage textMessage = (TextMessage) msg;
+                             topics.get(channel)
+                                   .add(msg.getJMSMessageID() + "    :" + textMessage.getText());
+                             retrieveChannels(channel);
+                         }
+                         catch (JMSException ex)
+                         {
+                             Logger.getLogger(ApplicationBroker.class.getName())
+                                   .log(Level.SEVERE, null, ex);
+                         }
+                     });
     }
 
     /**
@@ -91,7 +96,8 @@ public class ApplicationBroker
      *
      * @param channel
      */
-    public void refreshChatList(String channel) {
+    public void retrieveChannels(String channel)
+    {
         this.chatList = topics.get(channel);
     }
 
@@ -103,26 +109,53 @@ public class ApplicationBroker
      * @throws JMSException
      * @throws InterruptedException
      */
-    public void sendMessage(String channel, String text) throws JMSException, InterruptedException {
-        topicProducer.get(channel).sendMessage(text);
+    public void sendMessage(
+            String channel,
+            String text) throws JMSException, InterruptedException
+    {
+        topicProducer.get(channel)
+                     .sendMessage(text);
         Thread.sleep(500);
-        refreshChatList(channel);
+        retrieveChannels(channel);
+    }
+
+    /**
+     * Send a TextMessage to the desired channel
+     *
+     * @param channel
+     * @throws JMSException
+     * @throws InterruptedException
+     */
+    public void sendMessageObject(
+            String channel,
+            Object object) throws JMSException, InterruptedException
+    {
+
+        Gson gson = new Gson();
+
+        topicProducer.get(channel)
+                     .sendMessage(gson.toJson(object));
+        Thread.sleep(500);
+        retrieveChannels(channel);
     }
 
     /* Default getters and setters below */
-    public Map<String, ArrayList<String>> getTopics() {
+    public Map<String, List<String>> getTopics()
+    {
         return topics;
     }
 
-    public void setTopics(Map<String, ArrayList<String>> topics) {
+    public void setTopics(Map<String, List<String>> topics) {
         this.topics = topics;
     }
 
-    public ArrayList<String> getChatList() {
+    public List<String> getChatList()
+    {
         return chatList;
     }
 
-    public void setChatList(ArrayList<String> chatList) {
+    public void setChatList(ArrayList<String> chatList)
+    {
         this.chatList = chatList;
     }
 }

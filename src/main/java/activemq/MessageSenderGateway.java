@@ -5,37 +5,29 @@
  */
 package activemq;
 
-import javax.jms.Session;
-import javax.jms.Connection;
-import javax.jms.TextMessage;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.ConnectionFactory;
-
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-/**
- *
- * @author mimoun
- */
-public class MessageSenderGateway {
+import javax.jms.*;
 
+public class MessageSenderGateway
+{
+
+    private static final String url = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String subject = "JCG_QUEUE";
     private final ConnectionFactory connectionFactory;
     private final Connection connection;
     private final Session session;
     private final Destination destination;
     private final MessageProducer producer;
-    private static final String url = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private static final String subject = "JCG_QUEUE";
 
     /**
      * Constructor for MessageSenderGateway
      *
      * @throws JMSException
      */
-    public MessageSenderGateway() throws JMSException {
+    public MessageSenderGateway() throws JMSException
+    {
         connectionFactory = new ActiveMQConnectionFactory(url);
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -52,7 +44,8 @@ public class MessageSenderGateway {
      * @param text
      * @throws JMSException
      */
-    public void sendMessage(String text) throws JMSException {
+    public void sendMessage(String text) throws JMSException
+    {
         TextMessage messageText = session.createTextMessage(text);
 
         producer.send(messageText);
@@ -63,7 +56,8 @@ public class MessageSenderGateway {
      *
      * @throws JMSException
      */
-    public void close() throws JMSException {
+    public void close() throws JMSException
+    {
         connection.close();
     }
 }
